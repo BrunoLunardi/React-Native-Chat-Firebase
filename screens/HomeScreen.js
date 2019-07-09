@@ -5,6 +5,11 @@ import User from '../User';
 //tela inicial apos login
 export default class HomeScreen extends React.Component{
 
+    //Titulo da tela HomeScreen
+    static navigationOptions = {
+        title: 'Chats'
+    }
+
     //logout
     _logOut = async () => {
         await AsyncStorage.clear();

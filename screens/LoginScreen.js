@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  StyleSheet,
   Text,
   Alert,
   AsyncStorage,
@@ -8,21 +7,17 @@ import {
   TextInput,
   View, 
 } from 'react-native';
-
+//import AsyncStorage from '@react-native-community/async-storage';
 import User from '../User';
-/*
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-import { catchClause } from '@babel/types';
-*/
+import styles from '../constants/styles';
+
 //construtor
 export default class LoginScreen extends React.Component{
 
+  static navigationOptions = {
+    header:null
+  }
+  
   //mudar o tipo do teclado
   state = {
     phone: '',
@@ -51,11 +46,16 @@ export default class LoginScreen extends React.Component{
       Alert.alert('Error', 'Wrong phone number')
     }else if(this.state.name.length < 3){
       Alert.alert('Error', 'Wrong name')
-    }else{      
-      //await AsyncStorage.setItem('userPhone', this.phone)
-      User.phone = this.state.phone
-      //this.props.navigation.navigate('App')
-      console.log(this.props.navigation.navigate('App'))
+    }else{    
+      try {  
+        await AsyncStorage.setItem('userPhone', this.state.phone)
+        User.phone = this.state.phone
+        //this.props.navigation.navigate('App')
+        this.props.navigation.navigate('App')
+    } catch (error) {
+      // Error saving data
+      console.log(error);
+    }
     }
 
     //abre alert quando clica no botão enter (TouchableOpacity)
@@ -92,34 +92,3 @@ export default class LoginScreen extends React.Component{
     );
   }
 }
-
-//css da tela inicial
-const styles = StyleSheet.create({
-
-  //css da view
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF'
-  },
-
-  //css dos inputs
-  input: {
-    padding: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    width: '90%',
-    marginBottom: 10,
-    borderRadius: 5
-  },
-
-  //css do botão
-  btnText: {
-    color: 'darkblue',
-    fontSize: 20
-  }
-
-});
-
-
