@@ -8,6 +8,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "firebase": "^6.2.4",
     "jetifier": "^1.6.1",
     "react": "16.8.6",
     "react-native": "0.60.0",

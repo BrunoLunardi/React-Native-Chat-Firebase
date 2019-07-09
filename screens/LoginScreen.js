@@ -8,6 +8,7 @@ import {
   View, 
 } from 'react-native';
 //import AsyncStorage from '@react-native-community/async-storage';
+import firebase from 'firebase';
 import User from '../User';
 import styles from '../constants/styles';
 
@@ -28,17 +29,6 @@ export default class LoginScreen extends React.Component{
     this.setState({ [key]: val })
   }
 
-  /*
-  componentWillMount(){
-    AsyncStorage.getItem('userPhone').then(val=>{
-      if(val){
-        this.setState({phone:val})
-      }
-    })
-
-  }
-*/
- 
   //envia form
   submitForm = async () => {
     //valida telefone
@@ -50,6 +40,8 @@ export default class LoginScreen extends React.Component{
       try {  
         await AsyncStorage.setItem('userPhone', this.state.phone)
         User.phone = this.state.phone
+        //armazena usuário no Firebase na seguinte coleção: users -> numero_telefone -> nome_usuario
+        firebase.database().ref('users/' + User.phone).set({name: this.state.name});
         //this.props.navigation.navigate('App')
         this.props.navigation.navigate('App')
     } catch (error) {
