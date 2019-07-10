@@ -1,8 +1,9 @@
 import React from 'react';
-import {SafeAreaView, Text, View, TextInput, TouchableOpacity} from 'react-native';
+import {SafeAreaView, Text, View, Dimensions, TextInput, TouchableOpacity} from 'react-native';
 import styles from '../constants/styles';
 import User from '../User';
 import firebase from 'firebase'
+import { FlatList } from 'react-native-gesture-handler';
 
 //Tela do chat
 export default class ChatScreen extends React.Component{
@@ -25,8 +26,21 @@ export default class ChatScreen extends React.Component{
                 phone: props.navigation.getParam('phone'),
             },
             //mensagens do Chat inicia com nada escrito     
-            textMessage: ''
+            textMessage: '',
+            messageList: []
         }
+    }
+
+    //método usado uma vez por componente que pode realizar alterações de estado
+    componentWillMount(){
+        firebase.database().ref('messages').child(User.phone).child(this.state.person.phone)
+            .on('child_added', (value)=>{
+                this.setState((prevState)=>{
+                    return {
+                        messageList: [...prevState.messageList, value.val()]
+                    }
+                })
+            })
     }
 
     //Manipula alterações (chave -> valor)
@@ -57,10 +71,38 @@ export default class ChatScreen extends React.Component{
         }
     }
 
+    renderRow = ({item}) => {
+        return(
+            <View style={{
+                flexDirection:'row',
+                width:'60%',
+                alignSelf: item.from===User.phone ? 'flex-end' : 'flex-start',
+                backgroundColor: item.from===User.phone ? '#00897b' : '#7cb342',
+                borderRadius: 5,
+                marginBottom: 10
+            }}>
+                <Text style={{color:'#fff', padding:7, fontSize:16}}>
+                    {item.message}
+                </Text>
+                <Text style={{color:'#eee', padding: 3, fontSize:12}}>
+                    {item.time}
+                </Text>
+            </View>
+        )
+    }
+
     //Renderiza tela do chat
     render(){
+        let {height, width} = Dimensions.get('window');
         return(
             <SafeAreaView>
+                {/* Lista das mensagens do chat */}
+                <FlatList
+                    style={{padding:10, height: height * 0.8}}
+                    data={this.state.messageList}
+                    renderItem={this.renderRow}
+                    keyExtractor={(item,index)=>index.toString()}
+                />
                 <View style={{flexDirection:'row', alignItems:'center'}}>
                     <TextInput
                         style={styles.input}
