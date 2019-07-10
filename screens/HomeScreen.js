@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, AsyncStorage, FlatList,TouchableOpacity} from 'react-native';
+import {SafeAreaView ,View, Text, AsyncStorage, FlatList,TouchableOpacity} from 'react-native';
 import User from '../User';
 import firebase from 'firebase';
 import styles from '../constants/styles';
@@ -40,8 +40,12 @@ export default class HomeScreen extends React.Component{
 
     renderRow = ({item}) => {
         return (
-            <TouchableOpacity>
-                <Text>
+            //this.props.navigation.navigate('Chat', item) -> chama a rota Chat que está em App.js, 
+            //que redireciona para ChatScreen
+            <TouchableOpacity 
+            onPress={() => this.props.navigation.navigate('Chat', item)}
+            style={{padding:10,borderBottomColor:'#ccc', borderBottomWidth:1}}>
+                <Text style={{fontSize:20}}>
                     {item.name}
                 </Text>
             </TouchableOpacity>
@@ -50,15 +54,16 @@ export default class HomeScreen extends React.Component{
 
     //cria a tela
     //FlatList -> Lista de contatos salvo no Firebase
+    //SafeAreaView -> garante a renderização respeitando os limites da tela, no iOS 11 ou mais
     render(){
         return(
-            <View style={styles.container}>
+            <SafeAreaView>
                 <FlatList
                     data = {this.state.users}
                     renderItem={this.renderRow}
                     keyExtractor={(item)=>item.phone}
                 />
-            </View>
+            </SafeAreaView>
         )
     }
 }
