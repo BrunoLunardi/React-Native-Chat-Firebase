@@ -48,6 +48,21 @@ export default class ChatScreen extends React.Component{
         this.setState({[key]:val})
     }
 
+    //converte o horário de envio e recebimento de mensagens
+    convertTime = (time) => {
+        let d = new Date(time);
+        let c = new Date();
+        //colocar 0 se for menor que 10 a hora
+        let result = (d.getHours() < 10 ? '0' : '') + d.getHours() + ':';
+        result += (d.getMinutes() < 10 ? '0' : '') + d.getMinutes();
+
+        if(c.getDay() !== d.getDay()){
+            result = d.getDay() + ' ' + d.getMonth() + ' ' + result;
+        }
+
+        return result;
+    }
+
     //envio de mensagens
     sendMessage = async () => {
         //verifica se foi digitado alguma mensagem
@@ -85,7 +100,7 @@ export default class ChatScreen extends React.Component{
                     {item.message}
                 </Text>
                 <Text style={{color:'#eee', padding: 3, fontSize:12}}>
-                    {item.time}
+                    {this.converTime(item.time)}
                 </Text>
             </View>
         )
@@ -103,14 +118,14 @@ export default class ChatScreen extends React.Component{
                     renderItem={this.renderRow}
                     keyExtractor={(item,index)=>index.toString()}
                 />
-                <View style={{flexDirection:'row', alignItems:'center'}}>
+                <View style={{flexDirection:'row', alignItems:'center', marginHorizontal:5}}>
                     <TextInput
                         style={styles.input}
                         value={this.state.textMessage}
                         placeholder="Type message..."
                         onChangeText={this.handlerChange('textMessage')}
                     />
-                    <TouchableOpacity onPress={this.sendMessage}>
+                    <TouchableOpacity onPress={this.sendMessage} style={{paddingBottom:10, marginLeft:5}} > 
                         <Text style={styles.btnText}>Send</Text>
                     </TouchableOpacity>
                 </View>
