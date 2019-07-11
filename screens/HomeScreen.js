@@ -1,16 +1,22 @@
 import React from 'react';
-import {SafeAreaView ,View, Text, AsyncStorage, FlatList,TouchableOpacity} from 'react-native';
+import {SafeAreaView , Image, Text, FlatList,TouchableOpacity} from 'react-native';
 import User from '../User';
 import firebase from 'firebase';
-import styles from '../constants/styles';
 
 //tela inicial apos login
 //Componente de classe
 export default class HomeScreen extends React.Component{
 
     //Titulo da tela HomeScreen
-    static navigationOptions = {
-        title: 'Chats'
+    static navigationOptions = ({navigation}) => {
+        return{
+            title: 'Chats',
+            headerRight: (
+                <TouchableOpacity onPress={()=>navigation.navigate('Profile')}>
+                    <Image source={require('../images/user.png')} style={{width:32, height:32, marginRight:7}} />
+                </TouchableOpacity>
+            )
+        }
     }
 
     //dados usados pelo componente
@@ -36,12 +42,6 @@ export default class HomeScreen extends React.Component{
 
             }//fecha else
         })
-    }
-
-    //logout
-    _logOut = async () => {
-        await AsyncStorage.clear();
-        this.props.navigation.navigate('Auth');
     }
 
     renderRow = ({item}) => {
